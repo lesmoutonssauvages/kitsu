@@ -1,5 +1,4 @@
 // import * as en from '../src/locales/en'
-/*
 require = require("esm")(module)
 const en = require('../src/locales/en')
 const fr = require('../src/locales/fr')
@@ -50,7 +49,5 @@ locales.forEach(locale => {
   console.log('Missing main keys for', locale.name, ':', difference)
 })
 
-*/
-import fs from 'fs'
-import en from '../src/locales/en.js'
+const fs = require('fs')
 fs.writeFileSync('en.json', JSON.stringify(en, null, 2))

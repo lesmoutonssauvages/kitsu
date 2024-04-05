@@ -1,5 +1,33 @@
 <template>
   <!-- text input -->
+  <div
+    class="personnalDescriptors"
+    v-if="descriptor.data_type && isEditable && ['assets', 'effect', 'shots', 'ShotCount'].includes(descriptor.name)">
+    <span v-if="getMetadataFieldValue(descriptor, entity).length" class="strong">Count: {{ getMetadataFieldValue(descriptor, entity)?.length }}</span>
+    <ul>
+      <li v-for="item of getMetadataFieldValue(descriptor, entity)">
+          {{ item }}
+      </li>
+    </ul>
+  </div>
+  <!-- textarea input -->
+  <textarea
+    class="input-editor"
+    @input="event => onMetadataFieldChanged(entity, descriptor, event)"
+    @keyup.ctrl="
+      event =>
+        onInputKeyUp(
+          event,
+          indexes.k ? getIndex(indexes.i, indexes.k) : indexes.i,
+          indexes.j
+        )
+    "
+    :value="getMetadataFieldValue(descriptor, entity)"
+    v-else-if="
+      (!descriptor.data_type || descriptor.data_type === 'string') && isEditable && ['notes'].includes(descriptor.name)
+    "
+  >{{ getMetadataFieldValue(descriptor, entity) }}</textarea>
+  <!-- text input -->
   <input
     class="input-editor"
     @input="event => onMetadataFieldChanged(entity, descriptor, event)"
@@ -12,7 +40,7 @@
         )
     "
     :value="getMetadataFieldValue(descriptor, entity)"
-    v-if="
+    v-else-if="
       (!descriptor.data_type || descriptor.data_type === 'string') && isEditable
     "
   />
@@ -180,7 +208,11 @@ export default {
     }
   }
 }
-
+.personnalDescriptors {
+  height:100%;
+  font-size: .8em;
+  padding:.25em;
+}
 .input-editor {
   color: $grey-strong;
   height: 100%;

@@ -126,7 +126,10 @@ const getters = {
   getTaskPreviews: state => id => state.taskPreviews[id] ?? [],
 
   getTaskComment: state => (taskId, commentId) => {
-    return state.taskComments[taskId]?.find(comment => comment.id === commentId)
+    return (
+      state.taskComments[taskId]?.find(comment => comment.id === commentId) ??
+      []
+    )
   },
 
   getTaskStatus: state => id => {

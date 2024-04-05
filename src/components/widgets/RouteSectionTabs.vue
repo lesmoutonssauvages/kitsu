@@ -2,10 +2,8 @@
   <div class="tabs">
     <ul>
       <li
-        :key="`task-type-tab-${tab.name || tab.value}`"
-        :class="{
-          'is-active': tab.name === activeTab || tab.value === activeTab
-        }"
+        :key="`task-type-tab-${tab.name}`"
+        :class="{ 'is-active': tab.name === activeTab }"
         v-for="tab in tabs"
       >
         <router-link :to="getRoute(tab)">
@@ -41,7 +39,7 @@ export default {
         ...this.route,
         query: {
           ...this.route.query,
-          section: tab.name || tab.value
+          section: tab.name
         }
       }
     }

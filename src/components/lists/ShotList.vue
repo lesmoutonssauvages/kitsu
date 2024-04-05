@@ -298,6 +298,7 @@
                   :title="shot.full_name"
                   :to="shotPath(shot.id)"
                 >
+                  <span v-if="shot.data.effect.some((a) => a.includes('Pict'))"> ட</span>
                   {{ shot.name }}
                 </router-link>
               </div>

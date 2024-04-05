@@ -28,8 +28,10 @@ export const sortShots = shots => {
           numeric: true
         })
       )
-      .thenBy((a, b) =>
-        a.name.localeCompare(b.name, undefined, { numeric: true })
+      .thenBy((a, b) => {
+        return a.data.index - b.data.index
+        // a.name.localeCompare(b.name, undefined, { numeric: true })
+      }
       )
   )
 }
@@ -289,20 +291,9 @@ export const sortShotResult = (result, sorting, taskTypeMap, taskMap) => {
     result = result.sort(
       firstBy('canceled')
         .thenBy(sortEntities)
-        .thenBy(sortByEpisode)
-        .thenBy((a, b) =>
-          a.sequence_name.localeCompare(b.sequence_name, undefined, {
-            numeric: true
-          })
-        )
-        .thenBy((a, b) =>
-          a.name.localeCompare(b.name, undefined, { numeric: true })
-        )
     )
-  } else {
-    result = sortShots(result)
-  }
-  return result
+  } 
+  return result = sortShots(result)
 }
 
 export const sortSequenceResult = (result, sorting, taskTypeMap, taskMap) => {

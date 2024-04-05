@@ -220,7 +220,7 @@
                     :revision="currentRevision"
                     :task="task"
                     :team="currentTeam"
-                    @ack-comment="onAckComment"
+                    @ack-comment="ackComment"
                     @duplicate-comment="onDuplicateComment"
                     @pin-comment="onPinComment"
                     @edit-comment="onEditComment"
@@ -837,6 +837,15 @@ export default {
       return this.taskMap.get(this.route.params.task_id)
     },
 
+    getCurrentComment() {
+      if (this.route.params.comment_id) {
+        return this.getTaskComment(
+          this.route.params.task_id,
+          this.route.params.comment_id
+        )
+      }
+    },
+
     getCurrentTaskComments() {
       return this.getTaskComments(this.route.params.task_id)
     },
@@ -978,17 +987,12 @@ export default {
         })
     },
 
-    async saveComment(comment, checklist) {
-      try {
-        await this.editTaskComment({
-          taskId: this.task.id,
-          comment,
-          checklist
-        })
-      } catch (err) {
-        console.error(err)
-        await this.loadTaskData()
-      }
+    saveComment(comment, checklist) {
+      this.editTaskComment({
+        taskId: this.task.id,
+        comment,
+        checklist
+      })
     },
 
     confirmDeleteTaskComment() {
@@ -1164,10 +1168,6 @@ export default {
     confirmAddPreviewModal(forms) {
       this.selectFile(forms)
       this.closeAddPreviewModal()
-    },
-
-    onAckComment(comment) {
-      this.ackComment(comment)
     },
 
     onDuplicateComment(comment) {
@@ -1529,6 +1529,9 @@ video {
 .preview-column {
   overflow: auto;
   flex: 2;
+}
+
+.preview-column-content {
 }
 
 .preview-list {

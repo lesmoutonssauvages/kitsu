@@ -8,13 +8,7 @@
     ></div>
     <div class="side task-info">
       <action-panel
-        v-if="
-          withActions &&
-          (!isConceptTask || selectedConcepts.size > 0) &&
-          (nbSelectedEntities > 0 ||
-            nbSelectedTasks > 0 ||
-            nbSelectedValidations > 0)
-        "
+        v-if="withActions && (!isConceptTask || selectedConcepts.size > 0)"
         :is-movie-preview="isMoviePreview"
         :is-set-frame-thumbnail-loading="loading.setFrameThumbnail"
         @export-task="onExportClick"
@@ -1051,17 +1045,12 @@ export default {
       this.modals.deleteComment = false
     },
 
-    async saveComment(comment, checklist) {
-      try {
-        await this.editTaskComment({
-          taskId: this.task.id,
-          comment,
-          checklist
-        })
-      } catch (err) {
-        console.error(err)
-        await this.loadTaskData()
-      }
+    saveComment(comment, checklist) {
+      this.editTaskComment({
+        taskId: this.task.id,
+        comment,
+        checklist
+      })
     },
 
     confirmDeleteTaskComment() {

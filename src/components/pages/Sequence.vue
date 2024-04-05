@@ -23,73 +23,83 @@
         </div>
       </div>
 
-      <div class="sequence-data block">
-        <route-section-tabs
-          class="section-tabs"
-          :activeTab="currentSection"
-          :route="$route"
-          :tabs="entityNavOptions"
-        />
-
-        <div class="flexrow infos" v-show="currentSection === 'infos'">
-          <div class="flexrow-item flexcolumn entity-infos">
-            <page-subtitle :text="$t('main.tasks')" />
-            <entity-task-list
-              class="task-list"
-              :entries="currentTasks"
-              :is-loading="!currentSequence"
-              :is-error="false"
-              @task-selected="onTaskSelected"
-            />
-            <div class="flexrow">
-              <page-subtitle :text="$t('main.info')" />
-              <div class="filler"></div>
-              <div class="flexrow-item has-text-right">
-                <button-simple
-                  icon="edit"
-                  @click="modals.edit = true"
-                  v-if="isCurrentUserManager"
-                />
-              </div>
-            </div>
-
-            <div class="table-body">
-              <table class="datatable no-header" v-if="currentSequence">
-                <tbody class="table-body">
-                  <tr class="datatable-row">
-                    <td class="field-label">
-                      {{ $t('shots.fields.description') }}
-                    </td>
-                    <description-cell :entry="currentSequence" :full="true" />
-                  </tr>
-                  <tr
-                    :key="descriptor.id"
-                    class="datatable-row"
-                    v-for="descriptor in sequenceMetadataDescriptors"
-                  >
-                    <td class="field-label">{{ descriptor.name }}</td>
-                    <td>
-                      {{
-                        currentSequence.data
-                          ? currentSequence.data[descriptor.field_name]
-                          : ''
-                      }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+      <div class="flexrow infos">
+        <div class="flexrow-item block flexcolumn">
+          <page-subtitle :text="$t('sequences.tasks')" />
+          <entity-task-list
+            class="task-list"
+            :entries="currentTasks"
+            :is-loading="!currentSequence"
+            :is-error="false"
+            @task-selected="onTaskSelected"
+          />
+        </div>
+        <div class="flexrow-item block flexcolumn">
+          <div class="flexrow">
+            <page-subtitle :text="$t('main.info')" />
+            <div class="filler"></div>
+            <div class="flexrow-item has-text-right">
+              <button-simple
+                icon="edit"
+                @click="modals.edit = true"
+                v-if="isCurrentUserManager"
+              />
             </div>
           </div>
-        </div>
+          <div class="table-body">
+            <table class="datatable no-header" v-if="currentSequence">
+              <tbody class="datatable-body">
+                <tr class="datatable-row">
+                  <td class="field-label">
+                    {{ $t('shots.fields.description') }}
+                  </td>
+                  <description-cell :entry="currentSequence" :full="true" />
+                </tr>
 
+                <tr
+                  :key="descriptor.id"
+                  class="datatable-row"
+                  v-for="descriptor in sequenceMetadataDescriptors"
+                >
+                  <td class="field-label">{{ descriptor.name }}</td>
+                  <td>
+                    {{
+                      currentSequence && currentSequence.data
+                        ? currentSequence.data[descriptor.field_name]
+                        : ''
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="sequence-data block">
         <div class="flexrow">
+          <combobox-styled
+            class="section-combo flexrow-item"
+            :options="entityNavOptions"
+            v-model="currentSection"
+          />
+          <span v-show="currentSection === 'casting'">
+            {{ nbAssets }} {{ $tc('assets.number', nbAssets) }}
+          </span>
+          <span
+            class="tag tag-standby"
+            v-show="
+              currentSection === 'casting' &&
+              currentSequence &&
+              currentSequence.is_casting_standby
+            "
+          >
+            {{ $t('breakdown.fields.standby') }}
+          </span>
           <div class="filler"></div>
           <span
             class="flexrow-item mt05"
-            v-show="
-              currentSection === 'schedule' &&
-              scheduleItems[0].children.length > 0
-            "
+            v-show="currentSection === 'schedule'"
           >
             {{ $t('schedule.zoom_level') }}:
           </span>
@@ -98,29 +108,11 @@
             :options="zoomOptions"
             is-simple
             v-model="zoomLevel"
-            v-show="
-              currentSection === 'schedule' &&
-              scheduleItems[0].children.length > 0
-            "
+            v-show="currentSection === 'schedule'"
           />
         </div>
 
         <div class="sequence-casting" v-show="currentSection === 'casting'">
-          <div class="casting-data mt1">
-            <span v-show="currentSection === 'casting' && nbAssets > 0">
-              {{ nbAssets }} {{ $tc('assets.number', nbAssets) }}
-            </span>
-            <span
-              class="tag tag-standby"
-              v-show="
-                currentSection === 'casting' &&
-                currentSequence &&
-                currentSequence.is_casting_standby
-              "
-            >
-              {{ $t('breakdown.fields.standby') }}
-            </span>
-          </div>
           <div v-if="currentSequence">
             <div
               v-if="
@@ -212,15 +204,14 @@
           {{ $t('main.empty_schedule') }}
         </div>
 
-        <entity-chat
-          :entity="currentSequence"
-          :name="currentSequence?.full_name"
-          v-if="currentSection === 'chat'"
-        />
-
         <entity-preview-files
           :entity="currentSequence"
           v-if="currentSequence && currentSection === 'preview-files'"
+        />
+
+        <entity-news
+          :entity="currentSequence"
+          v-if="currentSequence && currentSection === 'activity'"
         />
 
         <entity-time-logs
@@ -230,10 +221,8 @@
       </div>
     </div>
 
-    <div class="column side-column" v-show="currentSection === 'infos'">
-      <task-info :task="currentTask" entity-type="Sequence" with-actions>
-        <entity-news class="news-column" :entity="currentSequence" />
-      </task-info>
+    <div class="column side-column" v-if="currentTask">
+      <task-info :task="currentTask" entity-type="Sequence" with-actions />
     </div>
 
     <edit-sequence-modal
@@ -258,9 +247,9 @@ import { formatListMixin } from '@/components/mixins/format'
 
 import ButtonSimple from '@/components/widgets/ButtonSimple'
 import ComboboxNumber from '@/components/widgets/ComboboxNumber'
+import ComboboxStyled from '@/components/widgets/ComboboxStyled'
 import DescriptionCell from '@/components/cells/DescriptionCell'
 import EditSequenceModal from '@/components/modals/EditSequenceModal'
-import EntityChat from '@/components/pages/entities/EntityChat.vue'
 import EntityNews from '@/components/pages/entities/EntityNews'
 import EntityPreviewFiles from '@/components/pages/entities/EntityPreviewFiles'
 import EntityTaskList from '@/components/lists/EntityTaskList'
@@ -268,7 +257,6 @@ import EntityTimeLogs from '@/components/pages/entities/EntityTimeLogs'
 import EntityThumbnail from '@/components/widgets/EntityThumbnail'
 import PageTitle from '@/components/widgets/PageTitle'
 import PageSubtitle from '@/components/widgets/PageSubtitle'
-import RouteSectionTabs from '@/components/widgets/RouteSectionTabs'
 import Schedule from '@/components/pages/schedule/Schedule'
 import TableInfo from '@/components/widgets/TableInfo'
 import TaskInfo from '@/components/sides/TaskInfo'
@@ -280,10 +268,10 @@ export default {
   components: {
     ButtonSimple,
     ComboboxNumber,
+    ComboboxStyled,
     CornerLeftUpIcon,
     DescriptionCell,
     EditSequenceModal,
-    EntityChat,
     EntityNews,
     EntityPreviewFiles,
     EntityTaskList,
@@ -292,7 +280,6 @@ export default {
     PageSubtitle,
     PageTitle,
     Schedule,
-    RouteSectionTabs,
     TableInfo,
     TaskInfo,
     TaskTypeName
@@ -322,7 +309,27 @@ export default {
 
   mounted() {
     this.clearSelectedTasks()
-    this.init()
+    this.loadCurrentSequence()
+      .then(sequence => {
+        this.currentSequence = sequence
+        this.currentSection = this.route.query.section || 'casting'
+        this.casting.isLoading = true
+        this.casting.isError = false
+        if (this.currentSequence) {
+          this.loadSequenceCasting(this.currentSequence)
+            .then(() => {
+              this.casting.isLoading = false
+            })
+            .catch(err => {
+              this.casting.isLoading = false
+              this.casting.isError = true
+              console.error(err)
+            })
+        } else {
+          this.resetData()
+        }
+      })
+      .catch(console.error)
   },
 
   computed: {
@@ -388,30 +395,6 @@ export default {
       'loadSequencesWithTasks',
       'loadSequenceCasting'
     ]),
-
-    init() {
-      this.loadCurrentSequence()
-        .then(sequence => {
-          this.currentSequence = sequence
-          this.currentSection = this.route.query.section || 'infos'
-          this.casting.isLoading = true
-          this.casting.isError = false
-          if (this.currentSequence) {
-            this.loadSequenceCasting(this.currentSequence)
-              .then(() => {
-                this.casting.isLoading = false
-              })
-              .catch(err => {
-                this.casting.isLoading = false
-                this.casting.isError = true
-                console.error(err)
-              })
-          } else {
-            this.resetData()
-          }
-        })
-        .catch(console.error)
-    },
 
     loadCurrentSequence() {
       return new Promise((resolve, reject) => {
@@ -480,6 +463,8 @@ export default {
       })
     }
   },
+
+  watch: {},
 
   metaInfo() {
     return {
@@ -564,8 +549,8 @@ h2.subtitle {
   text-transform: uppercase;
   font-size: 1.2em;
   color: var(--text);
-  margin-top: 1em;
-  margin-bottom: 0.6em;
+  margin-top: 2em;
+  margin-bottom: 0.4em;
 }
 
 .asset-list {
@@ -668,36 +653,5 @@ h2.subtitle {
   margin-left: 1em;
   cursor: default;
   text-transform: uppercase;
-}
-
-.section-tabs {
-  min-height: 36px;
-  margin-bottom: 0;
-}
-
-.infos {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  max-height: 100%;
-  overflow-y: auto;
-
-  .entity-infos {
-    align-self: flex-start;
-    flex: 1.5;
-  }
-}
-
-.entity-stats {
-  padding: 1em;
-  font-size: 1.2em;
-
-  .entry-label {
-    display: inline-block;
-    width: 120px;
-  }
-}
-
-.news-column {
-  max-height: 85%;
 }
 </style>

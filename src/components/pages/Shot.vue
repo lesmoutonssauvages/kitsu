@@ -193,12 +193,6 @@
           </div>
         </div>
 
-        <entity-chat
-          :entity="currentShot"
-          :name="currentShot ? currentShot.full_name : ''"
-          v-if="currentSection === 'chat'"
-        />
-
         <div class="shot-casting" v-show="currentSection === 'casting'">
           <div v-if="currentShot">
             <div
@@ -332,7 +326,6 @@ import ButtonSimple from '@/components/widgets/ButtonSimple'
 import ComboboxNumber from '@/components/widgets/ComboboxNumber'
 import DescriptionCell from '@/components/cells/DescriptionCell'
 import EditShotModal from '@/components/modals/EditShotModal'
-import EntityChat from '@/components/pages/entities/EntityChat'
 import EntityNews from '@/components/pages/entities/EntityNews'
 import EntityPreviewFiles from '@/components/pages/entities/EntityPreviewFiles'
 import EntityTaskList from '@/components/lists/EntityTaskList'
@@ -354,7 +347,6 @@ export default {
     CornerLeftUpIcon,
     DescriptionCell,
     EditShotModal,
-    EntityChat,
     EntityNews,
     EntityPreviewFiles,
     EntityTaskList,

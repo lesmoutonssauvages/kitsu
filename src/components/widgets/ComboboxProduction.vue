@@ -1,9 +1,5 @@
 <template>
-  <div
-    :class="{
-      field: withMargin
-    }"
-  >
+  <div class="field">
     <label class="label" v-if="label.length > 0">
       {{ label }}
     </label>
@@ -66,10 +62,6 @@ export default {
     label: {
       default: '',
       type: String
-    },
-    withMargin: {
-      default: true,
-      type: Boolean
     },
     productionList: {
       required: true,

@@ -30,7 +30,6 @@ const Concepts = () => import('@/components/pages/Concepts.vue')
 const CustomActions = () => import('@/components/pages/CustomActions.vue')
 const Departments = () => import('@/components/pages/Departments.vue')
 const Edit = () => import('@/components/pages/Edit.vue')
-const EntityChats = () => import('@/components/pages/EntityChats.vue')
 const EntitySearch = () => import('@/components/pages/EntitySearch.vue')
 const Episode = () => import('@/components/pages/Episode.vue')
 const Episodes = () => import('@/components/pages/Episodes.vue')
@@ -245,15 +244,9 @@ export const routes = [
       },
 
       {
-        path: 'entity-search',
+        path: '/entity-search',
         component: EntitySearch,
         name: 'entity-search'
-      },
-
-      {
-        path: 'entity-chats',
-        component: EntityChats,
-        name: 'entity-chats'
       },
 
       {

@@ -37,12 +37,6 @@
               </router-link>
             </p>
             <p @click="toggleSidebar()">
-              <router-link :to="{ name: 'entity-chats' }">
-                <kitsu-icon class="nav-icon" name="message" />
-                {{ $t('chats.title') }}
-              </router-link>
-            </p>
-            <p @click="toggleSidebar()">
               <router-link :to="{ name: 'open-productions' }">
                 <kitsu-icon class="nav-icon" name="my-productions" />
                 {{ $t('productions.open_productions') }}

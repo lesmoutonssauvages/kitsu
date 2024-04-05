@@ -9,7 +9,6 @@ import {
   parseDate,
   parseSimpleDate
 } from '@/lib/time'
-import stringHelpers from '@/lib/string'
 
 /*
  * Common functions for shot, asset, edit, sequncen and edit pages.
@@ -17,11 +16,10 @@ import stringHelpers from '@/lib/string'
 export const entityMixin = {
   data() {
     return {
-      currentSection: 'infos',
+      currentSection: 'Casting',
       zoomLevel: 1,
       entityNavOptions: [
         { label: 'Infos', value: 'infos' },
-        { label: 'Chat', value: 'chat' },
         { label: 'Casting', value: 'casting' },
         { label: 'Schedule', value: 'schedule' },
         { label: 'Preview Files', value: 'preview-files' },
@@ -231,31 +229,13 @@ export const entityMixin = {
   },
 
   watch: {
-    $route() {
-      const entityId = this.route.params[`${this.type}_id`]
-      const currentEntity =
-        this[`current${stringHelpers.capitalize(this.type)}`]
-      if (currentEntity && currentEntity !== entityId) {
-        this.init()
-      }
-      this.currentSection = this.route.query.section || 'infos'
-    },
-
     currentSection() {
-      if (this.currentSection === 'schedule' && this.scheduleItems.length > 0) {
-        if (this.$refs['schedule-widget']) {
-          this.$refs['schedule-widget'].scrollToDate(
-            this.scheduleItems[0].startDate
-          )
-        }
-      }
-    },
-
-    zoomLevel() {
-      if (this.$refs['schedule-widget']) {
-        this.$refs['schedule-widget'].scrollToDate(
-          this.scheduleItems[0].startDate
-        )
+      this.$router.push({
+        query: { section: this.currentSection }
+      })
+      const schedule = this.$refs['schedule-widget']
+      if (this.currentSection === 'schedule' && schedule) {
+        schedule.scrollToToday()
       }
     }
   }

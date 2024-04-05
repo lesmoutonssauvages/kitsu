@@ -92,12 +92,11 @@
             <checklist
               class="checklist"
               :checklist="checklist"
-              :disabled="true"
-              :is-editable="isEditable"
               @remove-task="removeTask"
-              @keyup.native="emitChangeEvent"
+              @keyup.native="emitChangeEvent($event)"
               @emit-change="emitChangeEvent"
               @time-code-clicked="onChecklistTimecodeClicked"
+              :disabled="true"
               v-if="checklist.length > 0"
             />
             <p class="has-text-centered" v-if="taskStatus.is_done && isLast">
@@ -248,17 +247,19 @@
               v-if="comment.text.length > 0 || comment.previews.length > 0"
             >
               <button
-                class="like-button flexrow-item"
                 :class="{
-                  'like-button--empty': comment.like === undefined
+                  'like-button': true,
+                  'like-button--empty':
+                    comment.like === undefined ? true : false,
+                  'flexrow-item': true
                 }"
-                type="button"
                 @click="acknowledgeComment(comment)"
+                type="button"
               >
                 <thumbs-up-icon size="1x" />
                 <span>{{ comment.acknowledgements.length }}</span>
               </button>
-              <span class="filler"></span>
+              <span class="filler"> </span>
               <span
                 class="flexrow-item reply-button"
                 @click="showReplyWidget"
@@ -547,7 +548,7 @@ export default {
     },
 
     taskStatus() {
-      const status = this.taskStatusMap.get(this.comment?.task_status.id)
+      const status = this.taskStatusMap.get(this.comment.task_status.id)
       return status || this.comment.task_status
     },
 
@@ -693,7 +694,7 @@ export default {
       this.checklist = remove(this.checklist, entry)
     },
 
-    emitChangeEvent() {
+    emitChangeEvent(event) {
       const now = new Date().getTime()
       this.lastCall = this.lastCall || 0
       if (now - this.lastCall > 1000) {

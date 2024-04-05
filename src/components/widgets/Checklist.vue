@@ -1,20 +1,20 @@
 <template>
   <div>
     <div
-      class="checklist-entry"
       :class="{
-        checked: entry.checked,
-        disabled: !isEditable
+        'checklist-entry': true,
+        flexrow: true,
+        checked: entry.checked
       }"
       :key="`comment-checklist-${index}`"
       v-for="(entry, index) in filteredChecklist"
     >
-      <span class="checklist-checkbox" @click="toggleEntryChecked(entry)">
+      <span class="flexrow-item" @click="toggleEntryChecked(entry)">
         <check-square-icon class="icon" v-if="entry.checked" />
         <square-icon class="icon" v-else />
       </span>
       <span
-        class="frame"
+        class="flexrow-item frame pointer"
         @click="
           $emit('time-code-clicked', {
             frame: entry.frame,
@@ -25,16 +25,16 @@
       >
         v{{ entry.revision }} - {{ formatFrame(entry.frame) }}
       </span>
-      <span @click="setFrame(entry)" v-if="isMoviePreview">
+      <span class="flexrow-item" @click="setFrame(entry)" v-if="isMoviePreview">
         <clock-icon class="icon clock" />
       </span>
       <textarea-autosize
         type="text"
-        class="checklist-text"
+        class="checklist-text flexrow-item"
         :ref="`checklist-entry-${index}`"
         rows="1"
         :placeholder="$t('comments.task_placeholder')"
-        @keypress.enter.prevent.native="addChecklistEntry(index)"
+        @keypress.enter.prevent.native="addChecklistEntry(index, $event)"
         @keyup.backspace.native="removeChecklistEntry(index)"
         @keyup.up.native="focusPrevious(index)"
         @keyup.down.native="focusNext(index)"
@@ -71,10 +71,6 @@ export default {
       default: -1,
       type: Number
     },
-    isEditable: {
-      type: Boolean,
-      default: true
-    },
     isMoviePreview: {
       default: false,
       type: Boolean
@@ -92,7 +88,7 @@ export default {
   },
 
   methods: {
-    addChecklistEntry(index) {
+    addChecklistEntry(index, event) {
       if (index === -1 || index === this.checklist.length - 1) {
         this.$emit('add-item', {
           index,
@@ -153,10 +149,8 @@ export default {
     },
 
     toggleEntryChecked(entry) {
-      if (this.isEditable) {
-        entry.checked = !entry.checked
-        this.$emit('emit-change')
-      }
+      entry.checked = !entry.checked
+      this.$emit('emit-change')
     }
   }
 }
@@ -187,17 +181,7 @@ export default {
     }
 
     &.checked .checklist-text {
-      color: $grey;
-    }
-
-    &.disabled {
-      .checklist-checkbox {
-        color: $grey;
-
-        .icon {
-          fill: rgba($grey, 0.15);
-        }
-      }
+      color: #999;
     }
   }
 }
@@ -212,7 +196,7 @@ export default {
   .checklist-text {
     font-size: 0.9em;
     padding: 0.2em;
-    padding-top: 0;
+    padding-top: 0em;
     margin-right: 0.5em;
     margin-top: 4px;
     width: 100%;
@@ -236,19 +220,8 @@ export default {
   }
 
   &.checked .checklist-text {
-    color: $light-grey-2;
+    color: #bbb;
     text-decoration: line-through;
-  }
-
-  &.disabled {
-    .checklist-checkbox {
-      cursor: default;
-      color: $light-grey-2;
-
-      .icon {
-        fill: rgba($light-grey-2, 0.15);
-      }
-    }
   }
 
   span {

@@ -202,7 +202,6 @@ export const getPersonPath = personId => {
     }
   }
 }
-
 export const getPersonTabPath = (personId, tab) => {
   return {
     name: 'person-tab',
@@ -211,14 +210,6 @@ export const getPersonTabPath = (personId, tab) => {
       tab
     }
   }
-}
-
-export const getDownloadAttachmentPath = attachment => {
-  return `/api/data/attachment-files/${attachment.id}/file/${attachment.name}`
-}
-
-export const getAttachmentThumbnailPath = attachment => {
-  return `/api/pictures/thumbnails/attachment-files/${attachment.id}.png`
 }
 
 export const pluralizeEntityType = (type = '') => {

@@ -1581,7 +1581,7 @@ tbody:last-child .empty-line:last-child {
   }
 
   .datatable-row-header {
-    z-index: 4;
+    z-index: 1001;
   }
   .header-icon {
     width: 15px;
@@ -1946,11 +1946,6 @@ tbody:last-child .empty-line:last-child {
   margin-top: 60px;
   max-width: 400px;
   width: 400px;
-}
-
-.left-side-column {
-  width: 300px;
-  max-width: 300px;
 }
 
 .empty-list {
