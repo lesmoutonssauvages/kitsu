@@ -2,7 +2,7 @@
   <!-- text input -->
   <div
     class="personnalDescriptors"
-    v-if="descriptor.data_type && isEditable && ['assets', 'effect', 'shots', 'ShotCount'].includes(descriptor.name)">
+    v-if="descriptor.data_type && isEditable && ['assets', 'edit_effect', 'shots', 'ShotCount'].includes(descriptor.name)">
     <span v-if="getMetadataFieldValue(descriptor, entity).length" class="strong">Count: {{ getMetadataFieldValue(descriptor, entity)?.length }}</span>
     <ul>
       <li v-for="item of getMetadataFieldValue(descriptor, entity)">
