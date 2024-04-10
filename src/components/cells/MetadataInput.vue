@@ -2,13 +2,14 @@
   <!-- text input -->
   <div
     class="personnalDescriptors"
-    v-if="descriptor.data_type && isEditable && ['assets', 'edit_effect', 'shots', 'ShotCount'].includes(descriptor.name)">
-    <span v-if="getMetadataFieldValue(descriptor, entity).length" class="strong">Count: {{ getMetadataFieldValue(descriptor, entity)?.length }}</span>
-    <ul>
+    v-if="descriptor.data_type && isEditable && ['assets', 'edit_effect', 'shots', 'ShotCount', 'reso'].includes(descriptor.name)">
+    <span v-if="descriptor.name === 'assets' && getMetadataFieldValue(descriptor, entity).length" class="strong">Count: {{ getMetadataFieldValue(descriptor, entity)?.length }}</span>
+    <ul v-if="['assets', 'edit_effect', 'shots'].includes(descriptor.name)">
       <li v-for="item of getMetadataFieldValue(descriptor, entity)">
           {{ item }}
       </li>
     </ul>
+    <span v-else>{{ getMetadataFieldValue(descriptor, entity) }}</span>
   </div>
   <!-- textarea input -->
   <textarea
