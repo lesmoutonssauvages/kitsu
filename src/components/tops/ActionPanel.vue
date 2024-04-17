@@ -47,7 +47,6 @@
               :title="$t('menu.assign_tasks')"
             />
           </div>
-
           <div
             class="menu-item"
             :class="{
@@ -299,7 +298,7 @@
           </div>
 
           <div class="filler"></div>
-
+          <tvpp-opener :task-id="selectedTaskIds[0]" v-if="isCurrentViewShot && false" />
           <div
             class="menu-item mr1"
             :title="$t('main.csv.export_file')"
@@ -826,6 +825,8 @@ import SearchField from '@/components/widgets/SearchField'
 import Spinner from '@/components/widgets/Spinner'
 import ViewPlaylistModal from '@/components/modals/ViewPlaylistModal'
 
+import TvppOpener from '@/components/tops/TvppOpener'
+
 export default {
   name: 'action-panel',
 
@@ -854,6 +855,7 @@ export default {
     PlayCircleIcon,
     SearchField,
     Spinner,
+    TvppOpener,
     ViewPlaylistModal
   },
 
