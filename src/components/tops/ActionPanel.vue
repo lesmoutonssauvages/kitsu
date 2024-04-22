@@ -297,8 +297,10 @@
             <kitsu-icon name="trash" :title="$t('menu.delete_concepts')" />
           </div>
 
+          <div class="menu-separator" v-if="isCurrentViewShot"></div>
+          <tvpp-opener :task-id="selectedTaskIds[0]" v-if="isCurrentViewShot" />
+          <div class="menu-separator" v-if="isCurrentViewShot"></div>
           <div class="filler"></div>
-          <tvpp-opener :task-id="selectedTaskIds[0]" v-if="isCurrentViewShot && false" />
           <div
             class="menu-item mr1"
             :title="$t('main.csv.export_file')"

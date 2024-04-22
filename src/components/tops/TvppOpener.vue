@@ -25,9 +25,15 @@ export default {
         const tld = document.location.host.split('.')
         if (!tld) return
         const ext = tld.pop() === 'tv' ? 'tv' : 'local'
+        const [,corset] = tld
+        let tenant = 'studio'
+        if (corset === 'lecorset' || corset === '0') {
+          tenant = 'lecorset'
+        }
+        console.log(tenant)
         const p = await superagent
           .get(`https://api.tools.eddystudio.${ext}/projects/${this.$route.params.production_id}/tasks/${this.taskId}/file`)
-          .set('X-Tenant-Id', 'lecorset-zou-app')
+          .set('X-Tenant-Id', `${tenant}-zou-app` )
         /*
         const p = await fetch(
           `https://api.tools.eddystudio.${ext}/projects/${this.$route.params.production_id}/tasks/${this.taskId}/file`, {
@@ -40,7 +46,7 @@ export default {
         )
         */
         if (!p.ok) return
-        this.link = await p.text()
+        this.link = p.text
       } catch(error) {
         console.log(error)
       }
@@ -48,3 +54,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+.menu-item {
+  padding-top:0;
+  margin-top:-.5em;
+}
+</style>
