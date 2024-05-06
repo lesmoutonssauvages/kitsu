@@ -1,17 +1,30 @@
 <template>
-  <div class="menu-item" style="text-align: center; line-height: 1em;" v-if="taskId && link">
+  <div class="menu-item" style="text-align: center; line-height: 1em;" v-if="taskId && link && selectedTaskIds.length === 1">
     <small>open</small>
     <br />
     <strong><a :href="link">TVPP</a></strong>
   </div>
 </template>
 <script>
+
 import superagent from 'superagent'
 export default {
   name: 'tvpp-opener',
   props: {
-    taskId: {
+    selectedTaskIds: {
+      type: Array
+    },
+    personId: {
       type: String
+    },
+    productionId: {
+      type: String,
+      default () {
+        return this.$route.params.production_id
+      }
+    },
+    partner: {
+      type: Object
     }
   },
   data() {
@@ -19,37 +32,38 @@ export default {
       link: ''
     }
   },
+  computed: {
+    taskId() {
+      return this.selectedTaskIds[0]
+    }
+  },
   watch: {
-    async taskId () {
-      try {
-        const tld = document.location.host.split('.')
-        if (!tld) return
-        const ext = tld.pop() === 'tv' ? 'tv' : 'local'
-        const [,corset] = tld
-        let tenant = 'studio'
-        if (corset === 'lecorset' || corset === '0') {
-          tenant = 'lecorset'
-        }
-        console.log(tenant)
-        const p = await superagent
-          .get(`https://api.tools.eddystudio.${ext}/projects/${this.$route.params.production_id}/tasks/${this.taskId}/file`)
-          .set('X-Tenant-Id', `${tenant}-zou-app` )
-        /*
-        const p = await fetch(
-          `https://api.tools.eddystudio.${ext}/projects/${this.$route.params.production_id}/tasks/${this.taskId}/file`, {
-            headers: {
-              'X-Tenant-Id': 'lecorset-zou-app',
-              // @ts-ignore
-              'Authorization': `Bearer ${access_token}`
-            }
+    taskId: {
+      async handler(newVal) {
+        this.link = ''
+        try {
+          if (!this.taskId) return
+          const tld = document.location.host.split('.')
+          if (!tld) return
+          const ext = tld.pop() === 'tv' ? 'tv' : 'local'
+          const [,corset] = tld
+          let tenant = 'studio'
+          if (corset === 'lecorset' || corset === '0') {
+            tenant = 'lecorset'
           }
-        )
-        */
-        if (!p.ok) return
-        this.link = p.text
-      } catch(error) {
-        console.log(error)
-      }
+          const url = `https://api.tools.eddystudio.${ext}/projects/${this.productionId}/tasks/${this.taskId}/file?person_id=${this.personId}`
+          const p = await fetch(url, {
+            headers: {
+              'X-Tenant-Id': `${tenant}-zou-app`,
+            }
+          })
+          if (!p.ok) return
+          this.link = await p.text()
+        } catch(error) {
+          console.log(error)
+        }
+      },
+      immediate: true
     }
   }
 }

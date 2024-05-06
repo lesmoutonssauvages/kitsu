@@ -297,9 +297,13 @@
             <kitsu-icon name="trash" :title="$t('menu.delete_concepts')" />
           </div>
 
-          <div class="menu-separator" v-if="isCurrentViewShot"></div>
-          <tvpp-opener :task-id="selectedTaskIds[0]" v-if="isCurrentViewShot" />
-          <div class="menu-separator" v-if="isCurrentViewShot"></div>
+          <tvpp-opener
+            :partner="currentProduction.data?.partners.find(a => a.name === user.data?.group)"
+            :selectedTaskIds="selectedTaskIds.length ? selectedTaskIds : [task?.id]"
+            :productionId="task?.project_id"
+            :person-id="user.id"
+          />
+          <div class="menu-separator" v-if="isCurrentViewShot && selectedTaskIds.length === 1"></div>
           <div class="filler"></div>
           <div
             class="menu-item mr1"
@@ -836,6 +840,9 @@ export default {
     isMoviePreview: {
       type: Boolean,
       default: false
+    },
+    task: {
+      type: Object
     },
     isSetFrameThumbnailLoading: {
       type: Boolean,
