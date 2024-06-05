@@ -51,7 +51,7 @@ export default {
           if (corset === 'lecorset' || corset === '0') {
             tenant = 'lecorset'
           }
-          const url = `https://api.tools.eddystudio.${ext}/projects/${this.productionId}/tasks/${this.taskId}/file?person_id=${this.personId}`
+          let url = `https://api.tools.eddystudio.${ext}/projects/${this.productionId}/tasks/${this.taskId}/file?person_id=${this.personId}&mac=${navigator.userAgent.includes('Macintosh')}`
           const p = await fetch(url, {
             headers: {
               'X-Tenant-Id': `${tenant}-zou-app`,
