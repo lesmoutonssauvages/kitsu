@@ -1,13 +1,13 @@
 <template>
   <div class="menu-item" style="text-align: center; line-height: 1em;" v-if="taskId && link && selectedTaskIds.length === 1">
-    <small>open</small>
-    <br />
-    <strong><a :href="link">TVPP</a></strong>
+    <a :href="link">
+      <small>open</small>
+      <br />
+      <strong>{{ extension }}</strong>
+    </a>
   </div>
 </template>
 <script>
-
-import superagent from 'superagent'
 export default {
   name: 'tvpp-opener',
   props: {
@@ -35,6 +35,9 @@ export default {
   computed: {
     taskId() {
       return this.selectedTaskIds[0]
+    },
+    extension() {
+      return this.link.split('.')?.pop()
     }
   },
   watch: {
@@ -72,5 +75,8 @@ export default {
 .menu-item {
   padding-top:0;
   margin-top:-.5em;
+}
+.menu-item a {
+  text-transform: uppercase;
 }
 </style>
