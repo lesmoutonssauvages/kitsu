@@ -326,6 +326,8 @@
                 :with-margin="false"
                 :task-status-list="availableTaskStatuses"
                 v-model="taskStatusId"
+                :is-artist="isCurrentUserArtist"
+                :group="user.data.group"
               />
             </div>
             <div class="flexrow-item is-wide">

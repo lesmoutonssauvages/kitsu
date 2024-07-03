@@ -42,7 +42,7 @@
           :key="status.id"
           class="status-line"
           @click="selectStatus(status)"
-          v-for="status in taskStatusList"
+          v-for="status in taskStatusListFiltered"
         >
           <span
             class="tag"
@@ -98,6 +98,14 @@ export default {
       default: '',
       type: String
     },
+    isArtist: {
+      default: () => false,
+      type: Boolean
+    },
+    group: {
+      default: '',
+      type: String
+    },
     narrow: {
       default: false,
       type: Boolean
@@ -122,7 +130,23 @@ export default {
 
   computed: {
     ...mapGetters(['isDarkTheme', 'taskStatusMap']),
-
+    taskStatusListFiltered() {
+      // Caribara // Amopix // LesAstronautes // Lenclume
+      console.log(this.taskStatusList.map(a=>a.name), this.group, this.isArtist)
+      if (this.isArtist) {
+        return [...this.taskStatusList].filter(a => ["3_WFA_INT", "3_WIP"].includes(a.name))
+      }
+      else if (['Amopix', 'LesAstronautes'].includes(this.group)) {
+        return [...this.taskStatusList].filter(a => ["2_HOLD", "3_WFA_INT", "3_WIP", "5_WFA", "7_RTK_INT", "9_DONE_INT", "10_PROCEED"].includes(a.name))
+      }
+      else if (['Caribara'].includes(this.group)) {
+        return [...this.taskStatusList].filter(a => ["2_HOLD", "3_WFA_INT", "3_WIP", "4_WFA_SUP", "7_RTK_INT"].includes(a.name))
+      }
+      else if (['Lenclume'].includes(this.group)) {
+        return [...this.taskStatusList].filter(a => ["2_HOLD", "3_WFA_INT", "3_WIP", "5_WFA", "7_RTK_INT"].includes(a.name))
+      }
+      return this.taskStatusList
+    },
     currentStatus() {
       if (this.value) {
         return this.taskStatusMap.get(this.value)
