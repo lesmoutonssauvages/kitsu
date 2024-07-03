@@ -131,9 +131,11 @@ export default {
   computed: {
     ...mapGetters(['isDarkTheme', 'taskStatusMap']),
     taskStatusListFiltered() {
-      // Caribara // Amopix // LesAstronautes // Lenclume
-      console.log(this.taskStatusList.map(a=>a.name), this.group, this.isArtist)
-      if (this.isArtist) {
+      // Eddy // Caribara // Amopix // LesAstronautes // Lenclume
+      if (['Eddy'].includes(this.group)) {
+        return this.taskStatusList
+      }
+      else if (this.isArtist) {
         return [...this.taskStatusList].filter(a => ["3_WFA_INT", "3_WIP"].includes(a.name))
       }
       else if (['Amopix', 'LesAstronautes'].includes(this.group)) {
