@@ -226,7 +226,7 @@
             :color-only="true"
             :task-status-list="taskStatus"
             :is-artist="isCurrentUserArtist"
-            :group="user.data.group"
+            :user="user"
             v-model="task_status_id"
           />
           <button-simple

@@ -102,9 +102,9 @@ export default {
       default: () => false,
       type: Boolean
     },
-    group: {
-      default: '',
-      type: String
+    user: {
+      default: () => {},
+      type: Object
     },
     narrow: {
       default: false,
@@ -131,20 +131,22 @@ export default {
   computed: {
     ...mapGetters(['isDarkTheme', 'taskStatusMap']),
     taskStatusListFiltered() {
-      // Eddy // Caribara // Amopix // LesAstronautes // Lenclume
-      if (['Eddy'].includes(this.group)) {
+      const group = this.user.data.group
+      // Eddy // Caribara // Amopix // LesAstronautes // Lenclume 
+      // Let nicoals hu got all rights
+      if (['Eddy'].includes(group) || this.user.id === '868242c0-0567-4ff5-98e2-921bcb1dd82f') {
         return this.taskStatusList
       }
       else if (this.isArtist) {
         return [...this.taskStatusList].filter(a => ["3_WFA_INT", "3_WIP"].includes(a.name))
       }
-      else if (['Amopix', 'LesAstronautes'].includes(this.group)) {
+      else if (['Amopix', 'LesAstronautes'].includes(group)) {
         return [...this.taskStatusList].filter(a => ["2_HOLD", "3_WFA_INT", "3_WIP", "5_WFA", "7_RTK_INT", "9_DONE_INT", "10_PROCEED"].includes(a.name))
       }
-      else if (['Caribara'].includes(this.group)) {
+      else if (['Caribara'].includes(group)) {
         return [...this.taskStatusList].filter(a => ["2_HOLD", "3_WFA_INT", "3_WIP", "4_WFA_SUP", "7_RTK_INT"].includes(a.name))
       }
-      else if (['Lenclume'].includes(this.group)) {
+      else if (['Lenclume'].includes(group)) {
         return [...this.taskStatusList].filter(a => ["2_HOLD", "3_WFA_INT", "3_WIP", "5_WFA", "7_RTK_INT"].includes(a.name))
       }
       return this.taskStatusList
