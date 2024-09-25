@@ -11,7 +11,7 @@
       v-if="!isEmpty"
     >
       <div class="content-wrapper full">
-        <div class="flexrow">
+        <div class="flexrow" @click="toggleMinimized">
           <validation-tag
             class="flexrow-item"
             :task="{ task_status_id: comment.task_status.id }"
@@ -303,7 +303,7 @@
     </div-->
     </article>
     <div class="empty-comment" v-else>
-      <div class="flexrow content-wrapper">
+      <div class="flexrow content-wrapper" @click="toggleMinimized">
         <validation-tag
           class="flexrow-item"
           :task="{ task_status_id: comment.task_status.id }"
@@ -402,7 +402,8 @@ export default {
       menuVisible: false,
       replyText: '',
       showReply: false,
-      uniqueClassName: (Math.random() + 1).toString(36).substring(2)
+      uniqueClassName: (Math.random() + 1).toString(36).substring(2),
+      isOpen: true
     }
   },
 
@@ -496,6 +497,7 @@ export default {
     },
 
     isEmpty() {
+      if (this.comment.person.is_bot === true && this.isOpen) return true
       return (
         this.comment.text.length === 0 &&
         (!this.comment.checklist || this.comment.checklist.length === 0) &&
@@ -677,6 +679,12 @@ export default {
 
     toggleCommentMenu() {
       this.menuVisible = !this.menuVisible
+    },
+
+    toggleMinimized () {
+      if (!this.comment.person.is_bot) return
+      console.log('ok')
+      this.isOpen = !this.isOpen
     },
 
     addChecklistEntry() {
@@ -967,6 +975,7 @@ article.comment {
 
 .flexrow {
   align-items: center;
+  cursor: pointer;
 }
 
 .comment-left {
