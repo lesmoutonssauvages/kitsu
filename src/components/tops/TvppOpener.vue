@@ -47,17 +47,16 @@ export default {
         try {
           if (!this.taskId) return
           const tld = document.location.host.split('.')
-          if (!tld) return
           const ext = tld.pop() === 'tv' ? 'tv' : 'local'
-          const [,corset] = tld
-          let tenant = 'studio'
-          if (corset === 'lecorset' || corset === '0') {
-            tenant = 'lecorset'
+          let [,tenant] = tld
+          // Local case in kitsu.dev mode (127.0.0.1)
+          if (tenant === '0' && ext === 'local') {
+            tenant = 'corset'
           }
           let url = `https://api.tools.eddystudio.${ext}/projects/${this.productionId}/tasks/${this.taskId}/file?person_id=${this.personId}&mac=${navigator.userAgent.includes('Macintosh')}`
           const p = await fetch(url, {
             headers: {
-              'X-Tenant-Id': `${tenant}-zou-app`,
+              'X-Tenant-Id': tenant,
             }
           })
           if (!p.ok) return
